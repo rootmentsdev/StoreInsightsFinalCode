@@ -155,9 +155,14 @@ import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import connectDB from "./config/database.js";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 app.set("trust proxy", 1);
+
+// Connect to MongoDB
+connectDB();
 
 /* Env */
 const PORT = process.env.PORT || 3000;
@@ -171,6 +176,8 @@ const allowed = (process.env.FRONTEND_ORIGINS || "http://localhost:5173")
   .filter(Boolean);
 
 /* Middleware */
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: (origin, cb) => {
@@ -196,6 +203,9 @@ app.use(
 app.get("/health", (_req, res) =>
   res.json({ ok: true, ts: new Date().toISOString() })
 );
+
+/* Authentication Routes */
+app.use("/api/auth", authRoutes);
 
 /* Fetch with timeout */
 async function fetchWithTimeout(url, ms = 20000) {

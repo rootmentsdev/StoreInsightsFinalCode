@@ -337,33 +337,6 @@ export default function StoreInsights() {
             </Col>
           </Row>
 
-          {/* Summary Cards */}
-          <Row className="mb-3">
-            <Col md={3}>
-              <div className="sp-summary-card">
-                <div className="sp-summary-title">Total Revenue</div>
-                <div className="sp-summary-value">₹{fmt(totalRevenue)}</div>
-              </div>
-            </Col>
-            <Col md={3}>
-              <div className="sp-summary-card">
-                <div className="sp-summary-title">Total Bills</div>
-                <div className="sp-summary-value">{fmt(totalBills)}</div>
-              </div>
-            </Col>
-            <Col md={3}>
-              <div className="sp-summary-card">
-                <div className="sp-summary-title">Avg Conversion</div>
-                <div className="sp-summary-value">{avgConversion.toFixed(1)}%</div>
-              </div>
-            </Col>
-            <Col md={3}>
-              <div className="sp-summary-card">
-                <div className="sp-summary-title">Active Stores</div>
-                <div className="sp-summary-value">{filtered.length}</div>
-              </div>
-            </Col>
-          </Row>
 
           {/* Filters Toolbar */}
           <Row className="g-2 sp-toolbar mb-3" role="region" aria-label="Filters">

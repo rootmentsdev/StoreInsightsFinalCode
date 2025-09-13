@@ -1,13 +1,41 @@
 
 
 
-import { Container, Row, Col } from "react-bootstrap";
-import { FaUserCircle } from "react-icons/fa";
+import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
+import { FaUserCircle, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroHeader({
   title = "CEO Smart Insights",
   subtitle = "Monday 4 August 2025 | 04–1.5 pm",
 }) {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  const formatDate = () => {
+    const now = new Date();
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return now.toLocaleDateString('en-US', options);
+  };
+
+  const formatTime = () => {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
   return (
     <header className="hero-header">
       <style>{`
@@ -84,13 +112,60 @@ export default function HeroHeader({
           {/* Spacer */}
           <Col />
 
-          {/* Right: title + subtitle + avatar */}
+          {/* Right: User info + logout */}
           <Col xs="auto" className="d-flex align-items-center">
-            <div className="right-block me-2">
-              <p className="title mb-1">{title}</p>
-              <p className="subtitle mb-0">{subtitle}</p>
-            </div>
-            <FaUserCircle className="avatar-icon" />
+            {isAuthenticated && user ? (
+              <>
+                <div className="right-block me-3">
+                  <p className="title mb-1">Welcome, {user.name}</p>
+                  <p className="subtitle mb-0">{user.email}</p>
+                </div>
+                <Dropdown align="end">
+                  <Dropdown.Toggle 
+                    variant="link" 
+                    className="p-0 border-0 bg-transparent"
+                    style={{ color: '#bbb' }}
+                  >
+                    <FaUserCircle className="avatar-icon" />
+                  </Dropdown.Toggle>
+                  
+                  <Dropdown.Menu 
+                    variant="dark" 
+                    className="border-0 shadow"
+                    style={{ 
+                      backgroundColor: '#1a1a1a',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    <Dropdown.Header className="text-white-50">
+                      <small>Signed in as</small><br/>
+                      <strong>{user.name}</strong>
+                    </Dropdown.Header>
+                    <Dropdown.Divider className="my-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+                    <Dropdown.Item 
+                      className="text-white-50 py-2"
+                      onClick={handleLogout}
+                      style={{ 
+                        backgroundColor: 'transparent',
+                        border: 'none'
+                      }}
+                    >
+                      <FaSignOutAlt className="me-2" />
+                      Logout
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </>
+            ) : (
+              <>
+                <div className="right-block me-2">
+                  <p className="title mb-1">{formatDate()}</p>
+                  <p className="subtitle mb-0">{formatTime()}</p>
+                </div>
+                <FaUserCircle className="avatar-icon" />
+              </>
+            )}
           </Col>
         </Row>
       </Container>

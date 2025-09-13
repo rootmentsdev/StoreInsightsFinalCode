@@ -1,34 +1,26 @@
-
-
-
-
-
-
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   Container, 
   Row, 
   Col, 
   Form, 
   Button, 
-  Card, 
-  InputGroup,
-  Spinner,
-  Badge,
-  Alert
+  Card,
+  Spinner
 } from 'react-bootstrap';
 import { 
-  FaUser, 
-  FaLock, 
   FaEye, 
   FaEyeSlash, 
-  FaShieldAlt
+  FaUser,
+  FaLock,
+  FaEnvelope
 } from 'react-icons/fa';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -36,8 +28,28 @@ const LoginPage = () => {
     rememberMe: false
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [validated, setValidated] = useState(false);
   const [loginError, setLoginError] = useState('');
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Pre-fill email if remember me was checked
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('userEmail');
+    const rememberMe = localStorage.getItem('rememberMe');
+    
+    if (rememberedEmail && rememberMe === 'true') {
+      setFormData(prev => ({
+        ...prev,
+        email: rememberedEmail,
+        rememberMe: true
+      }));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -45,266 +57,201 @@ const LoginPage = () => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
-    // Clear error when user starts typing
     if (loginError) setLoginError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-      setValidated(true);
-      return;
-    }
-
     setIsLoading(true);
-    setValidated(true);
     setLoginError('');
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Mock authentication logic
-      // Replace this with your actual authentication logic
-      if (formData.email && formData.password.length >= 6) {
-        // Successful login
-        console.log('Login successful:', formData);
-        
-        // Store user session (optional)
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', formData.email);
-        
-        // Navigate to home page
-        navigate('/');
-      } else {
-        // Failed login
-        setLoginError('Invalid email or password. Please try again.');
-      }
-    }, 2000);
+    const result = await login(formData.email, formData.password, formData.rememberMe);
+    
+    if (result.success) {
+      navigate('/');
+    } else {
+      setLoginError(result.error);
+    }
+    
+    setIsLoading(false);
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  if (authLoading) {
+    return (
+      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#f8f9fa' }}>
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+  }
 
   return (
-    <div 
-      className="min-vh-100 d-flex align-items-center justify-content-center"
-      style={{
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1e1e1e 50%, #0d0d0d 100%)',
-        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
-      }}
-    >
+    <div className="min-vh-100 d-flex align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
       <Container>
         <Row className="justify-content-center">
-          <Col xs={11} sm={8} md={6} lg={5} xl={4}>
-            {/* Main Login Card - Black Glassmorphic Effect */}
-            <Card 
-              className="shadow-lg border-0"
-              style={{
-                borderRadius: '16px',
-                backdropFilter: 'blur(15px)',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.7)'
-              }}
-            >
-              <Card.Body className="p-4">
+          <Col xs={12} sm={10} md={8} lg={6} xl={5}>
+            <Card className="shadow-lg border-0">
+              <Card.Body className="p-5">
                 
-                {/* Header Section - Updated for dark theme */}
-                <div className="text-center mb-3">
-                  <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
-                       style={{ 
-                         width: '60px', 
-                         height: '60px',
-                         background: 'rgba(255, 255, 255, 0.1)',
-                         backdropFilter: 'blur(10px)',
-                         border: '1px solid rgba(255, 255, 255, 0.2)'
-                       }}>
-                    <FaShieldAlt className="text-white" style={{ fontSize: '1.5rem' }} />
-                  </div>
-                  <h3 className="fw-bold text-white mb-1">Store Insights</h3>
-                  <p className="text-white-50 mb-2" style={{ fontSize: '14px' }}>Log in to access your dashboard</p>
-                </div>
-
-                {/* Error Alert */}
-                {loginError && (
-                  <Alert 
-                    variant="danger" 
-                    className="mb-3 py-2" 
+                {/* Header */}
+                <div className="text-center mb-4">
+                  <div 
+                    className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
                     style={{ 
-                      fontSize: '14px',
-                      backgroundColor: 'rgba(220, 53, 69, 0.2)',
-                      border: '1px solid rgba(220, 53, 69, 0.3)',
-                      color: '#ff6b6b'
+                      width: '80px', 
+                      height: '80px',
+                      backgroundColor: '#007bff',
+                      color: 'white'
                     }}
                   >
-                    {loginError}
-                  </Alert>
+                    <FaUser size={32} />
+                  </div>
+                  <h2 className="mb-2 fw-bold text-dark">Welcome Back</h2>
+                  <p className="text-muted mb-0">Sign in to your Store Insights account</p>
+                </div>
+
+                {/* Error Message */}
+                {loginError && (
+                  <div className="alert alert-danger mb-3" role="alert">
+                    <small>{loginError}</small>
+                  </div>
                 )}
 
                 {/* Login Form */}
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit}>
                   
-                  {/* Email Input */}
+                  {/* Email Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-white" style={{ fontSize: '14px' }}>Email Address</Form.Label>
-                    <InputGroup className="mb-1">
-                      <InputGroup.Text 
-                        className="border-end-0" 
-                        style={{ 
-                          fontSize: '14px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white'
-                        }}
-                      >
-                        <FaUser className="text-white" style={{ fontSize: '14px' }} />
-                      </InputGroup.Text>
+                    <Form.Label className="fw-semibold text-dark">Email Address</Form.Label>
+                    <div className="position-relative">
                       <Form.Control
                         type="email"
                         name="email"
                         placeholder="Enter your email address"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="border-start-0 py-2"
+                        className="form-control-lg"
                         style={{ 
-                          fontSize: '14px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white'
+                          paddingLeft: '45px',
+                          borderRadius: '10px',
+                          border: '2px solid #e9ecef'
                         }}
                         required
                       />
-                      <Form.Control.Feedback type="invalid" style={{ fontSize: '12px', color: '#ffffff' }}>
-                        Please provide a valid email address.
-                      </Form.Control.Feedback>
-                    </InputGroup>
+                      <FaEnvelope 
+                        className="position-absolute text-muted" 
+                        style={{ 
+                          left: '15px', 
+                          top: '50%', 
+                          transform: 'translateY(-50%)',
+                          fontSize: '16px'
+                        }} 
+                      />
+                    </div>
                   </Form.Group>
 
-                  {/* Password Input */}
+                  {/* Password Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-white" style={{ fontSize: '14px' }}>Password</Form.Label>
-                    <InputGroup className="mb-1">
-                      <InputGroup.Text 
-                        className="border-end-0" 
-                        style={{ 
-                          fontSize: '14px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white'
-                        }}
-                      >
-                        <FaLock className="text-white" style={{ fontSize: '14px' }} />
-                      </InputGroup.Text>
+                    <Form.Label className="fw-semibold text-dark">Password</Form.Label>
+                    <div className="position-relative">
                       <Form.Control
                         type={showPassword ? 'text' : 'password'}
                         name="password"
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className="border-start-0 border-end-0 py-2"
+                        className="form-control-lg"
                         style={{ 
-                          fontSize: '14px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white'
+                          paddingLeft: '45px',
+                          paddingRight: '50px',
+                          borderRadius: '10px',
+                          border: '2px solid #e9ecef'
                         }}
                         required
-                        minLength="6"
                       />
-                      <InputGroup.Text 
-                        className="border-start-0 cursor-pointer"
-                        onClick={togglePasswordVisibility}
+                      <FaLock 
+                        className="position-absolute text-muted" 
                         style={{ 
-                          cursor: 'pointer', 
-                          fontSize: '14px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white'
+                          left: '15px', 
+                          top: '50%', 
+                          transform: 'translateY(-50%)',
+                          fontSize: '16px'
+                        }} 
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-link position-absolute text-muted p-0"
+                        style={{ 
+                          right: '15px', 
+                          top: '50%', 
+                          transform: 'translateY(-50%)',
+                          border: 'none',
+                          background: 'none'
                         }}
+                        onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <FaEyeSlash className="text-white-50" style={{ fontSize: '14px' }} /> : <FaEye className="text-white-50" style={{ fontSize: '14px' }} />}
-                      </InputGroup.Text>
-                      <Form.Control.Feedback type="invalid" style={{ fontSize: '12px', color: '#ff6b6b' }}>
-                        Password must be at least 6 characters long.
-                      </Form.Control.Feedback>
-                    </InputGroup>
+                        {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                      </button>
+                    </div>
                   </Form.Group>
 
-                  {/* Remember Me & Forgot Password */}
-                  <Row className="mb-3">
-                    <Col xs={6}>
-                      <Form.Check
-                        type="checkbox"
-                        name="rememberMe"
-                        id="rememberMe"
-                        label="Remember me"
-                        checked={formData.rememberMe}
-                        onChange={handleInputChange}
-                        className="text-white-50"
-                        style={{ fontSize: '13px' }}
-                      />
-                    </Col>
-                    <Col xs={6} className="text-end">
-                      <Button 
-                        variant="link" 
-                        className="p-0 text-decoration-none fw-semibold text-white-50"
-                        style={{ fontSize: '13px' }}
-                      >
-                        Forgot Password?
-                      </Button>
-                    </Col>
-                  </Row>
+                  {/* Remember Me */}
+                  <div className="d-flex justify-content-between align-items-center mb-4">
+                    <Form.Check
+                      type="checkbox"
+                      name="rememberMe"
+                      id="rememberMe"
+                      label="Remember me"
+                      checked={formData.rememberMe}
+                      onChange={handleInputChange}
+                      className="text-dark"
+                    />
+                    <Link 
+                      to="#" 
+                      className="text-decoration-none text-primary fw-semibold"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
 
                   {/* Login Button */}
-                  <div className="d-grid mb-3">
-                    <Button
-                      type="submit"
-                      size="md"
-                      className="py-2 fw-semibold"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                        borderRadius: '10px',
-                        color: 'white',
-                        fontSize: '14px',
-                        backdropFilter: 'blur(10px)'
-                      }}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <>
-                          <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            className="me-2"
-                          />
-                          Signing In...
-                        </>
-                      ) : (
-                        'Sign In to Dashboard'
-                      )}
-                    </Button>
-                  </div>
+                  <Button
+                    type="submit"
+                    className="w-100 py-3 fw-bold"
+                    size="lg"
+                    style={{
+                      backgroundColor: '#007bff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontSize: '16px'
+                    }}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Spinner size="sm" className="me-2" />
+                        Signing In...
+                      </>
+                    ) : (
+                      'Sign In to Dashboard'
+                    )}
+                  </Button>
                 </Form>
 
-                {/* Security Badge */}
-                <div className="text-center mt-3">
-                  <small className="text-white-50 d-flex align-items-center justify-content-center" style={{ fontSize: '11px' }}>
-                    <FaShieldAlt className="me-1 text-success" style={{ fontSize: '11px' }} />
-                    Store Insights is committed to your security.
-                  </small>
+                {/* Register Link */}
+                <div className="text-center mt-4">
+                  <p className="text-muted mb-0">
+                    Don't have an account?{' '}
+                    <Link 
+                      to="/register" 
+                      className="text-decoration-none text-primary fw-bold"
+                    >
+                      Create Account
+                    </Link>
+                  </p>
                 </div>
 
               </Card.Body>
             </Card>
-
           </Col>
         </Row>
       </Container>
