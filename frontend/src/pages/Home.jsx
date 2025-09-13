@@ -258,14 +258,37 @@ export default function StoreInsights() {
 
   const totalRevenue = filtered.reduce((sum, r) => sum + (r.revenue || 0), 0);
   const totalBills = filtered.reduce((sum, r) => sum + (r.bills || 0), 0);
-  const avgConversion = filtered.length > 0
-    ? filtered.reduce((sum, r) => sum + (r.conversion || 0), 0) / filtered.length
+  const totalMtdBills = filtered.reduce((sum, r) => sum + (r.mtd_bills || 0), 0);
+  const avgConversion = (() => {
+    if (filtered.length === 0) return 0;
+    
+    // Calculate weighted average conversion based on walk-ins
+    // Stores with more walk-ins have more influence on the overall average
+    const totalWalkins = filtered.reduce((sum, r) => sum + (r.walkins || 0), 0);
+    if (totalWalkins === 0) return 0;
+    
+    const weightedSum = filtered.reduce((sum, r) => {
+      const walkins = r.walkins || 0;
+      const conversion = r.conversion || 0;
+      return sum + (conversion * walkins);
+    }, 0);
+    
+    return weightedSum / totalWalkins;
+  })();
+  const avgRating = filtered.length > 0
+    ? filtered.reduce((sum, r) => sum + (r.rating || 0), 0) / filtered.length
     : 0;
 
   return (
     <>
       <HeroHeader />
-      <StatsCards />
+      <StatsCards 
+        totalRevenue={totalRevenue}
+        totalBills={totalBills}
+        totalMtdBills={totalMtdBills}
+        avgConversion={avgConversion}
+        avgRating={avgRating}
+      />
 
       <div style={{ background: "#0b0b0b", minHeight: "100vh" }}>
         <Container fluid className="sp-wrap">

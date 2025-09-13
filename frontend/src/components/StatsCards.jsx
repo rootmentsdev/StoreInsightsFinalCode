@@ -1,8 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { FaArrowUp, FaWallet, FaShoppingCart, FaUsers, FaStar } from "react-icons/fa";
+import { FaWallet, FaShoppingCart, FaUsers, FaStar } from "react-icons/fa";
 
-const StatCard = ({ label, value, trend, note, Icon, iconBg, iconColor }) => {
+const StatCard = ({ label, value, mtdValue, Icon, iconBg, iconColor }) => {
   return (
     <Card
   style={{
@@ -10,74 +10,69 @@ const StatCard = ({ label, value, trend, note, Icon, iconBg, iconColor }) => {
     border: "1px solid rgba(255,255,255,0.08)",
     borderRadius: "12px",
     color: "#fff",
+    height: "120px", // Fixed height
+    width: "100%", // Full width of container
+    display: "flex",
+    flexDirection: "column",
   }}
 >
-  <Card.Body style={{ padding: "8px" }}> {/* reduced from 18px */}
+  <Card.Body style={{ 
+    padding: "16px", 
+    display: "flex", 
+    flexDirection: "column", 
+    justifyContent: "space-between",
+    height: "100%"
+  }}>
     <div
       style={{
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "space-between",
-        gap: "8px", // reduced gap
+        gap: "8px",
       }}
     >
-      <div>
-        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", marginBottom: "4px" }}>
           {label}
         </div>
         <div
           style={{
-            marginTop: "2px", // reduced from 4px
-            fontSize: "20px", // reduced from 24px
+            fontSize: "20px",
             fontWeight: 600,
             letterSpacing: "0.2px",
+            marginBottom: "4px",
           }}
         >
           {value}
         </div>
+        {mtdValue && (
+          <div
+            style={{
+              fontSize: "12px",
+              color: "rgba(255,255,255,0.6)",
+              fontWeight: 400,
+            }}
+          >
+            MTD: {mtdValue}
+          </div>
+        )}
       </div>
       <div
         style={{
-          height: "32px", // reduced from 36px
-          width: "32px",
-          borderRadius: "8px", // reduced radius slightly
+          height: "36px",
+          width: "36px",
+          borderRadius: "8px",
           display: "grid",
           placeItems: "center",
           background: iconBg,
           color: iconColor,
+          flexShrink: 0,
         }}
       >
-        <Icon size={16} /> {/* smaller icon */}
+        <Icon size={18} />
       </div>
     </div>
 
-    <div
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "6px", // reduced from 8px
-        marginTop: "8px", // reduced from 12px
-        padding: "3px 6px", // smaller padding
-        borderRadius: "6px",
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.12)",
-        fontSize: "11px", // slightly smaller
-        color: "rgba(255,255,255,0.8)",
-      }}
-    >
-      <span
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "4px",
-          fontWeight: 600,
-        }}
-      >
-        <FaArrowUp size={11} />
-        <span>{trend}</span>
-      </span>
-      <span style={{ color: "rgba(255,255,255,0.55)" }}>{note}</span>
-    </div>
   </Card.Body>
   <div
     style={{
@@ -96,40 +91,41 @@ const StatCard = ({ label, value, trend, note, Icon, iconBg, iconColor }) => {
   );
 };
 
-export default function StatsCards() {
+export default function StatsCards({ 
+  totalRevenue = 0, 
+  totalBills = 0, 
+  totalMtdBills = 0,
+  avgConversion = 0, 
+  avgRating = 0 
+}) {
+  const fmt = (n) => Number(n || 0).toLocaleString("en-IN");
+  
   const stats = [
     {
       label: "Total Revenue",
-      value: "₹8.46L",
-      trend: "+9.2%",
-      note: "vs last year this month",
+      value: `₹${fmt(totalRevenue)}`,
       Icon: FaWallet,
       iconBg: "rgba(250, 204, 21, 0.12)",
       iconColor: "#facc15",
     },
     {
       label: "Total Bills",
-      value: "3,522",
-      trend: "+10.5%",
-      note: "vs last year this month",
+      value: fmt(totalBills),
+      mtdValue: fmt(totalMtdBills),
       Icon: FaShoppingCart,
       iconBg: "rgba(168, 85, 247, 0.12)",
       iconColor: "#a855f7",
     },
     {
       label: "Avg Sales Conversion",
-      value: "56.4%",
-      trend: "+8.5%",
-      note: "vs last year this month",
+      value: `${avgConversion.toFixed(1)}%`,
       Icon: FaUsers,
       iconBg: "rgba(34, 197, 94, 0.12)",
       iconColor: "#22c55e",
     },
     {
       label: "Avg Customer Ratings",
-      value: "4.7/5",
-      trend: "+9.6%",
-      note: "vs last year this month",
+      value: `${avgRating.toFixed(1)}/5`,
       Icon: FaStar,
       iconBg: "rgba(34, 211, 238, 0.12)",
       iconColor: "#22d3ee",
