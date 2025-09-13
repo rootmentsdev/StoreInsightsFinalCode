@@ -1,0 +1,219 @@
+/* ====== Global page skin (exact look) ====== */
+.sp-wrap { padding: 14px 16px 32px; color:#e9eaeb; }
+.sp-tab { background:#111214; color:#cfd2d6; border:1px solid rgba(255,255,255,.08); padding:6px 12px; }
+.sp-tab--active { background:#1a1b1e; color:#fff; border-color:#1e73be; }
+.sp-toolbar { margin-top:10px; align-items:center; }
+.sp-input .sp-input-pre{ background:#131416; border-color:#222; color:#7e8a98; }
+.sp-input-control{ background:#0f1012; border-color:#222; color:#e9eaeb; }
+.sp-input-control::placeholder{ color:#77808b; }
+
+.sp-dd { background:#111214; color:#e9eaeb; border:1px solid rgba(255,255,255,.08); padding:6px 12px; }
+.sp-dd:hover, .sp-dd:focus{ background:#141518; color:#fff; }
+.sp-dd-menu { min-width: 220px; }
+.sp-dd-bold { color:#fff; }
+
+.sp-month{ background:#111214; color:#e9eaeb; border:1px solid rgba(255,255,255,.08); padding:6px 8px; height:34px; }
+
+.sp-btn{ background:#111214; color:#e9eaeb; border:1px solid rgba(255,255,255,.08); padding:6px 12px; }
+.sp-btn:hover{ background:#15161a; color:#fff; }
+
+/* ====== Card ====== */
+.sp-card{ background:#0e0f11; border:1px solid rgba(255,255,255,.08); border-radius:10px; overflow:hidden; }
+.sp-card-head{ display:flex; justify-content:space-between; align-items:flex-end; padding:14px 16px 10px; border-bottom:1px solid rgba(255,255,255,.06); }
+.sp-title{ font-size:14px; font-weight:600; color:#e9eaeb; }
+.sp-sub{ font-size:12px; color:rgba(255,255,255,.55); }
+
+/* ====== Table viewport (sticky header) ====== */
+.sp-table-wrap{ position:relative; }
+.sp-table-viewport{ max-height: 560px; overflow:auto; }
+.sp-table{ margin:0; font-size:13px; }
+
+/* (base) header/rows; will be overridden by force section below */
+.sp-table thead th{
+  position:sticky; top:0; z-index:3;
+  background:#0f1012;
+  font-size:11.5px; color:#9aa4af;
+  text-transform:none;
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+}
+.sp-row{ background:#0f1012; }
+.sp-row--alt{ background:#0e0f11; }
+.sp-table td, .sp-table th{ vertical-align:middle; border-bottom:1px solid rgba(255,255,255,.06) !important; }
+
+/* Chevron */
+.sp-chevron{ width:36px; color:#7f8a97; }
+
+/* Store cell */
+.sp-store-title{ font-weight:600; color:#e9eaeb; }
+.sp-store-sub{ display:flex; align-items:center; gap:6px; margin-top:2px; font-size:11px; color:rgba(255,255,255,.55); }
+.sp-badge{ padding:2px 6px; border-radius:6px; font-size:10px; border:1px solid rgba(255,255,255,.12); }
+.sp-badge.is-sg{ background:rgba(30,115,190,.1); color:#7fb8ff; border-color:rgba(30,115,190,.35); }
+.sp-badge.is-zr{ background:rgba(12,173,117,.1); color:#5ae0b3; border-color:rgba(12,173,117,.35); }
+.sp-sep{ opacity:.6; }
+.sp-manager{ color:#a9b2bd; }
+
+/* Revenue cell */
+.sp-revenue-main{ color:#e9eaeb; font-weight:600; }
+.sp-revenue-sub{ color:#96a2af; font-size:11px; display:flex; align-items:center; gap:6px; }
+.arrow-up{ color:#21cf86; }
+.arrow-down{ color:#ef5b63; }
+.tiny{ transform: translateY(-1px); font-size:10px; }
+
+/* Quantity / Target cell */
+.sp-qty-main{ color:#e9eaeb; font-weight:600; }
+.sp-qty-sub{ font-size:11px; display:flex; align-items:center; gap:6px; }
+.sp-qty-sub.up{ color:#21cf86; }
+.sp-qty-sub.down{ color:#ef5b63; }
+
+/* YoY */
+.sp-yoy-main{ font-weight:600; color:#e9eaeb; }
+.sp-yoy-sub{ font-size:11px; color:#96a2af; }
+
+/* Walk-ins / Bills */
+.sp-walkins, .sp-bills{ font-weight:600; color:#e9eaeb; }
+.sp-walkins-sub, .sp-bills-sub{ font-size:11px; color:#96a2af; }
+
+/* Conversions */
+.t-green{ color:#21cf86 !important; }
+.t-red{ color:#ef5b63 !important; }
+
+/* Rating */
+td:nth-child(10){ color:#e9eaeb; }
+
+/* Performance pill */
+.sp-pill{ font-size:11px; padding:4px 10px; border-radius:999px; border:1px solid transparent; }
+.sp-excellent{ background:rgba(33,207,134,.12); color:#3be29d; border-color:rgba(33,207,134,.35); }
+.sp-good{ background:rgba(30,115,190,.12); color:#7fb8ff; border-color:rgba(30,115,190,.35); }
+.sp-average{ background:rgba(245,158,11,.12); color:#ffcc66; border-color:rgba(245,158,11,.35); }
+.sp-poor{ background:rgba(239,91,99,.12); color:#ff8a92; border-color:rgba(239,91,99,.35); }
+
+/* Expanded row (base) */
+.sp-expand-row td{ background:#0c0d0f; }
+.sp-expand{ padding:14px; border:1px solid rgba(255,255,255,.06); border-radius:10px; }
+.sp-sec-title{ font-size:12px; color:#9aa4af; margin-bottom:6px; text-transform:none; }
+.sp-kv{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,.06); font-size:13px; }
+.sp-kv:last-child{ border-bottom:none; }
+.sp-kv span{ color:#9aa4af; }
+.sp-kv b{ color:#e9eaeb; }
+
+/* ===== Toolbar exact look overrides ===== */
+
+/* Tabs */
+.sp-tab,
+.sp-tab.btn,
+.sp-tab.btn-primary {
+  background:#111214 !important;
+  color:#cfd2d6 !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
+}
+.sp-tab--active,
+.sp-tab--active.btn,
+.sp-tab--active.btn-primary {
+  background:#0f1012 !important;
+  color:#ffffff !important;
+  border-color:#1e73be !important;
+}
+
+/* Dropdown toggles */
+.sp-dd.btn,
+.sp-dd.btn-primary,
+.sp-dd.dropdown-toggle {
+  background:#111214 !important;
+  color:#e9eaeb !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
+}
+.sp-dd.btn:active, .sp-dd.btn:focus, .sp-dd.btn:hover {
+  background:#14161a !important;
+  color:#fff !important;
+}
+
+/* Filter / Export buttons */
+.sp-btn.btn,
+.sp-btn.btn-primary {
+  background:#111214 !important;
+  color:#e9eaeb !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
+}
+.sp-btn.btn:hover { background:#15161a !important; }
+
+/* Month picker */
+input.sp-month.form-control,
+input[type="month"].sp-month {
+  background:#111214 !important;
+  color:#e9eaeb !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  height:34px !important;
+}
+.sp-month::-webkit-calendar-picker-indicator { filter: invert(1) opacity(.9); }
+
+/* Search input */
+.sp-input .sp-input-pre { background:#131416 !important; border-color:#222 !important; color:#7e8a98 !important; }
+.sp-input-control.form-control { background:#0f1012 !important; color:#e9eaeb !important; border:1px solid #222 !important; }
+.sp-input-control::placeholder { color:#77808b !important; }
+
+/* ===== Compact sizing for toolbar controls ===== */
+.sp-toolbar .btn,
+.sp-toolbar .dropdown-toggle,
+.sp-toolbar .form-control {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  height: 30px !important;
+  line-height: 1.2 !important;
+  border-radius: 6px !important;
+}
+.sp-input-control.form-control { padding-top:4px !important; padding-bottom:4px !important; }
+.sp-input .sp-input-pre { padding:4px 6px !important; font-size:12px !important; }
+.sp-month { padding-top:4px !important; padding-bottom:4px !important; font-size:12px !important; }
+.sp-btn svg, .sp-dd svg { width:12px; height:12px; }
+
+/* ===== Force dropdown/popup panels to grey ===== */
+.dropdown-menu,
+.sp-dd-menu.dropdown-menu{
+  background:#1a1b1e !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  border-radius:8px !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.45) !important;
+}
+.dropdown-menu .dropdown-item{ color:#e9eaeb !important; }
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus{
+  background:#2a2b2f !important;
+  color:#ffffff !important;
+}
+
+/* ======== FORCE COLOR SWAP (takes precedence) ======== */
+.sp-table thead th {
+  background-color:#1a1b1e !important;
+  background:#1a1b1e !important;
+}
+.sp-row,
+.sp-row--alt,
+.sp-table tbody tr {
+  background-color:#000000 !important;
+  background:#000000 !important;
+}
+.sp-expand-row td,
+.sp-expand {
+  background-color:#1a1b1e !important;
+  background:#1a1b1e !important;
+}
+
+/* ======== EXTRA SPECIFICITY PATCH ======== */
+.sp-table thead tr th {
+  background: #1a1b1e !important;
+  background-color: #1a1b1e !important;
+}
+.sp-table tbody tr.sp-row,
+.sp-table tbody tr.sp-row--alt,
+.sp-table tbody tr {
+  background: #000000 !important;
+  background-color: #000000 !important;
+}
+.sp-table tbody tr.sp-expand-row td,
+.sp-expand {
+  background: #1a1b1e !important;
+  background-color: #1a1b1e !important;
+}
