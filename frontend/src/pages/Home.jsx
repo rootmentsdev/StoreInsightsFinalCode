@@ -223,7 +223,7 @@ export default function StoreInsights() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return LIVE_ROWS.filter((r) => {
+    const filteredRows = LIVE_ROWS.filter((r) => {
       const byCluster = clusterFilter === "All Clusters" || r.cluster === clusterFilter;
       const byStore = storeFilter === "All Stores" || r.store === storeFilter;
       const byPerf = perfFilter === "All Performance" || r.performance === perfFilter;
@@ -232,6 +232,12 @@ export default function StoreInsights() {
         r.store?.toLowerCase().includes(q) ||
         (r.cluster || "").toLowerCase().includes(q);
       return byCluster && byStore && byPerf && textMatch;
+    });
+    
+    // Sort to show poor performance stores first
+    return filteredRows.sort((a, b) => {
+      const performanceOrder = { "Poor": 0, "Average": 1, "Good": 2, "Excellent": 3 };
+      return performanceOrder[a.performance] - performanceOrder[b.performance];
     });
   }, [query, storeFilter, perfFilter, clusterFilter, LIVE_ROWS]);
 
@@ -513,7 +519,7 @@ export default function StoreInsights() {
                       return (
                         <React.Fragment key={r.id}>
                           <tr
-                            className={`sp-row ${i % 2 ? "sp-row--alt" : ""}`}
+                            className={`sp-row ${i % 2 ? "sp-row--alt" : ""} ${r.performance === "Poor" ? "sp-row--poor" : ""}`}
                             onClick={() => toggleRow(r.id)}
                             role="button"
                             aria-expanded={open}

@@ -38,6 +38,8 @@
 }
 .sp-row{ background:#0f1012; }
 .sp-row--alt{ background:#0e0f11; }
+.sp-row--poor{ background:#1a0f0f; border-left: 3px solid #ef5b63; }
+.sp-row--poor.sp-row--alt{ background:#150e0e; }
 .sp-table td, .sp-table th{ vertical-align:middle; border-bottom:1px solid rgba(255,255,255,.06) !important; }
 
 /* Chevron */
