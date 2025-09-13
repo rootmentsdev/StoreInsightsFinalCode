@@ -79,18 +79,30 @@ const RegisterPage = () => {
 
   if (authLoading) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#f8f9fa' }}>
-        <Spinner animation="border" variant="primary" />
+      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#000000' }}>
+        <Spinner animation="border" variant="light" />
       </div>
     );
   }
 
   return (
-    <div className="min-vh-100 d-flex align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
+    <div className="min-vh-100 d-flex align-items-center" style={{ backgroundColor: '#000000' }}>
+      <style>
+        {`
+          .form-control::placeholder {
+            color: white !important;
+            opacity: 0.7;
+          }
+          .form-control:focus {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+          }
+        `}
+      </style>
       <Container>
         <Row className="justify-content-center">
           <Col xs={12} sm={10} md={8} lg={6} xl={5}>
-            <Card className="shadow-lg border-0">
+            <Card className="shadow-lg border-0" style={{ backgroundColor: '#1a1a1a' }}>
               <Card.Body className="p-5">
                 
                 {/* Header */}
@@ -106,8 +118,8 @@ const RegisterPage = () => {
                   >
                     <FaUserPlus size={32} />
                   </div>
-                  <h2 className="mb-2 fw-bold text-dark">Create Account</h2>
-                  <p className="text-muted mb-0">Join Store Insights today</p>
+                  <h2 className="mb-2 fw-bold text-white">Create Account</h2>
+                  <p className="text-light mb-0">Join Store Insights today</p>
                 </div>
 
                 {/* Success Message */}
@@ -129,7 +141,7 @@ const RegisterPage = () => {
                   
                   {/* Name Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-dark">Full Name</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Full Name</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type="text"
@@ -141,7 +153,9 @@ const RegisterPage = () => {
                         style={{ 
                           paddingLeft: '45px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                         minLength="2"
@@ -161,7 +175,7 @@ const RegisterPage = () => {
 
                   {/* Email Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-dark">Email Address</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Email Address</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type="email"
@@ -173,7 +187,9 @@ const RegisterPage = () => {
                         style={{ 
                           paddingLeft: '45px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                       />
@@ -191,7 +207,7 @@ const RegisterPage = () => {
 
                   {/* Password Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-dark">Password</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type={showPassword ? 'text' : 'password'}
@@ -204,7 +220,9 @@ const RegisterPage = () => {
                           paddingLeft: '45px',
                           paddingRight: '50px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                         minLength="6"
@@ -237,7 +255,7 @@ const RegisterPage = () => {
 
                   {/* Confirm Password Field */}
                   <Form.Group className="mb-4">
-                    <Form.Label className="fw-semibold text-dark">Confirm Password</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Confirm Password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type={showConfirmPassword ? 'text' : 'password'}
@@ -250,7 +268,9 @@ const RegisterPage = () => {
                           paddingLeft: '45px',
                           paddingRight: '50px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                         minLength="6"
@@ -287,7 +307,8 @@ const RegisterPage = () => {
                     className="w-100 py-3 fw-bold"
                     size="lg"
                     style={{
-                      backgroundColor: '#28a745',
+                      backgroundColor: 'white',
+                      color: 'black',
                       border: 'none',
                       borderRadius: '10px',
                       fontSize: '16px'
@@ -307,7 +328,7 @@ const RegisterPage = () => {
 
                 {/* Login Link */}
                 <div className="text-center mt-4">
-                  <p className="text-muted mb-0">
+                  <p className="text-light mb-0">
                     Already have an account?{' '}
                     <Link 
                       to="/login" 

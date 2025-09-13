@@ -78,18 +78,30 @@ const LoginPage = () => {
 
   if (authLoading) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#f8f9fa' }}>
-        <Spinner animation="border" variant="primary" />
+      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#000000' }}>
+        <Spinner animation="border" variant="light" />
       </div>
     );
   }
 
   return (
-    <div className="min-vh-100 d-flex align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
+    <div className="min-vh-100 d-flex align-items-center" style={{ backgroundColor: '#000000' }}>
+      <style>
+        {`
+          .form-control::placeholder {
+            color: white !important;
+            opacity: 0.7;
+          }
+          .form-control:focus {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+          }
+        `}
+      </style>
       <Container>
         <Row className="justify-content-center">
           <Col xs={12} sm={10} md={8} lg={6} xl={5}>
-            <Card className="shadow-lg border-0">
+            <Card className="shadow-lg border-0" style={{ backgroundColor: '#1a1a1a' }}>
               <Card.Body className="p-5">
                 
                 {/* Header */}
@@ -99,14 +111,14 @@ const LoginPage = () => {
                     style={{ 
                       width: '80px', 
                       height: '80px',
-                      backgroundColor: '#007bff',
+                      backgroundColor: '#28a745',
                       color: 'white'
                     }}
                   >
                     <FaUser size={32} />
                   </div>
-                  <h2 className="mb-2 fw-bold text-dark">Welcome Back</h2>
-                  <p className="text-muted mb-0">Sign in to your Store Insights account</p>
+                  <h2 className="mb-2 fw-bold text-white">Welcome Back</h2>
+                  <p className="text-light mb-0">Sign in to your Store Insights account</p>
                 </div>
 
                 {/* Error Message */}
@@ -121,7 +133,7 @@ const LoginPage = () => {
                   
                   {/* Email Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-dark">Email Address</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Email Address</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type="email"
@@ -133,7 +145,9 @@ const LoginPage = () => {
                         style={{ 
                           paddingLeft: '45px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                       />
@@ -151,7 +165,7 @@ const LoginPage = () => {
 
                   {/* Password Field */}
                   <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold text-dark">Password</Form.Label>
+                    <Form.Label className="fw-semibold text-white">Password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         type={showPassword ? 'text' : 'password'}
@@ -164,7 +178,9 @@ const LoginPage = () => {
                           paddingLeft: '45px',
                           paddingRight: '50px',
                           borderRadius: '10px',
-                          border: '2px solid #e9ecef'
+                          border: '2px solid #444',
+                          backgroundColor: '#2d2d2d',
+                          color: 'white'
                         }}
                         required
                       />
@@ -195,7 +211,7 @@ const LoginPage = () => {
                   </Form.Group>
 
                   {/* Remember Me */}
-                  <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="mb-4">
                     <Form.Check
                       type="checkbox"
                       name="rememberMe"
@@ -203,14 +219,8 @@ const LoginPage = () => {
                       label="Remember me"
                       checked={formData.rememberMe}
                       onChange={handleInputChange}
-                      className="text-dark"
+                      className="text-light"
                     />
-                    <Link 
-                      to="#" 
-                      className="text-decoration-none text-primary fw-semibold"
-                    >
-                      Forgot password?
-                    </Link>
                   </div>
 
                   {/* Login Button */}
@@ -219,7 +229,8 @@ const LoginPage = () => {
                     className="w-100 py-3 fw-bold"
                     size="lg"
                     style={{
-                      backgroundColor: '#007bff',
+                      backgroundColor: 'white',
+                      color: 'black',
                       border: 'none',
                       borderRadius: '10px',
                       fontSize: '16px'
@@ -239,7 +250,7 @@ const LoginPage = () => {
 
                 {/* Register Link */}
                 <div className="text-center mt-4">
-                  <p className="text-muted mb-0">
+                  <p className="text-light mb-0">
                     Don't have an account?{' '}
                     <Link 
                       to="/register" 
