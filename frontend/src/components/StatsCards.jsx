@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { FaWallet, FaShoppingCart, FaUsers, FaStar } from "react-icons/fa";
+import { FaWallet, FaShoppingCart, FaUsers, FaStar, FaWalking, FaBox } from "react-icons/fa";
 
 const StatCard = ({ label, value, mtdValue, Icon, iconBg, iconColor }) => {
   return (
@@ -96,7 +96,10 @@ export default function StatsCards({
   totalBills = 0, 
   totalMtdBills = 0,
   avgConversion = 0, 
-  avgRating = 0 
+  avgRating = 0,
+  totalWalkins = 0,
+  totalQuantity = 0,
+  totalMtdQuantity = 0
 }) {
   const fmt = (n) => Number(n || 0).toLocaleString("en-IN");
   
@@ -115,6 +118,21 @@ export default function StatsCards({
       Icon: FaShoppingCart,
       iconBg: "rgba(168, 85, 247, 0.12)",
       iconColor: "#a855f7",
+    },
+    {
+      label: "Total Walk-ins",
+      value: fmt(totalWalkins),
+      Icon: FaWalking,
+      iconBg: "rgba(239, 68, 68, 0.12)",
+      iconColor: "#ef4444",
+    },
+    {
+      label: "Total Quantity",
+      value: fmt(totalQuantity),
+      mtdValue: fmt(totalMtdQuantity),
+      Icon: FaBox,
+      iconBg: "rgba(245, 158, 11, 0.12)",
+      iconColor: "#f59e0b",
     },
     {
       label: "Avg Sales Conversion",
@@ -136,7 +154,7 @@ export default function StatsCards({
     <Container fluid style={{ background: "#0b0b0b", padding: "6px 10px" }}>
       <Row className="g-3">
         {stats.map((s, i) => (
-          <Col key={i} xs={12} md={6} lg={3}>
+          <Col key={i} xs={12} sm={6} md={4} lg={2}>
             <StatCard {...s} />
           </Col>
         ))}

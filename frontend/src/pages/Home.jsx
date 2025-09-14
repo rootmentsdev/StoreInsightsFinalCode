@@ -265,6 +265,9 @@ export default function StoreInsights() {
   const totalRevenue = filtered.reduce((sum, r) => sum + (r.revenue || 0), 0);
   const totalBills = filtered.reduce((sum, r) => sum + (r.bills || 0), 0);
   const totalMtdBills = filtered.reduce((sum, r) => sum + (r.mtd_bills || 0), 0);
+  const totalWalkins = filtered.reduce((sum, r) => sum + (r.walkins || 0), 0);
+  const totalQuantity = filtered.reduce((sum, r) => sum + (r.qty || 0), 0);
+  const totalMtdQuantity = filtered.reduce((sum, r) => sum + (r.mtd_qty || 0), 0);
   const avgConversion = (() => {
     if (filtered.length === 0) return 0;
     
@@ -294,6 +297,9 @@ export default function StoreInsights() {
         totalMtdBills={totalMtdBills}
         avgConversion={avgConversion}
         avgRating={avgRating}
+        totalWalkins={totalWalkins}
+        totalQuantity={totalQuantity}
+        totalMtdQuantity={totalMtdQuantity}
       />
 
       <div style={{ background: "#0b0b0b", minHeight: "100vh" }}>
