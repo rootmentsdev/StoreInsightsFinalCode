@@ -27,33 +27,39 @@ const allowed = (process.env.FRONTEND_ORIGINS || "http://localhost:5173,https://
 /* Middleware */
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-// Enhanced CORS configuration
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      console.log('CORS request from origin:', origin);
-      console.log('Allowed origins:', allowed);
-      
-      if (!origin) {
-        console.log('No origin (curl/postman) - allowing');
-        return cb(null, true);
-      }
-      
-      if (allowed.includes(origin)) {
-        console.log('Origin allowed:', origin);
-        return cb(null, true);
-      }
-      
-      console.log('Origin NOT allowed:', origin);
-      cb(new Error("CORS: origin not allowed"));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    optionsSuccessStatus: 200,
-    preflightContinue: false
-  })
-);
+
+// Comprehensive CORS handling
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log(`[CORS] ${req.method} request from origin:`, origin);
+  console.log('[CORS] Allowed origins:', allowed);
+  
+  // Allow requests from allowed origins
+  if (allowed.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    console.log('[CORS] Origin allowed:', origin);
+  } else if (!origin) {
+    // Allow requests without origin (curl, postman, etc.)
+    res.header('Access-Control-Allow-Origin', '*');
+    console.log('[CORS] No origin - allowing all');
+  } else {
+    console.log('[CORS] Origin NOT allowed:', origin);
+  }
+  
+  // Set CORS headers for all responses
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    console.log('[CORS] Handling OPTIONS preflight request');
+    return res.status(200).end();
+  }
+  
+  next();
+});
 app.use(compression());
 app.use(morgan("tiny"));
 app.use(
@@ -82,28 +88,34 @@ app.get("/api/cors-test", (_req, res) => {
   });
 });
 
-/* Handle preflight requests */
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  console.log('OPTIONS preflight request from origin:', origin);
-  console.log('Request headers:', req.headers);
-  
-  if (allowed.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', '86400'); // 24 hours
-    console.log('CORS headers set for origin:', origin);
-    res.status(200).end();
-  } else {
-    console.log('Origin not allowed for OPTIONS:', origin);
-    res.status(403).json({ error: 'CORS: origin not allowed' });
-  }
+/* Simple auth test endpoint */
+app.post("/api/auth/test", (_req, res) => {
+  console.log('Auth test endpoint hit');
+  res.json({ 
+    message: "Auth endpoint CORS test successful", 
+    timestamp: new Date().toISOString(),
+    origin: _req.headers.origin 
+  });
 });
 
-/* Authentication Routes */
-app.use("/api/auth", authRoutes);
+// OPTIONS requests are now handled in the main CORS middleware above
+
+/* Authentication Routes with explicit CORS */
+app.use("/api/auth", (req, res, next) => {
+  // Ensure CORS headers are set for auth routes
+  const origin = req.headers.origin;
+  if (allowed.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+}, authRoutes);
 
 /* Fetch with timeout */
 async function fetchWithTimeout(url, ms = 20000) {
