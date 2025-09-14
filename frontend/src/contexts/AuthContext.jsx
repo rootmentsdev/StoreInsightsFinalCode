@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         
         if (token && savedUser) {
           // Verify token with backend
-          const response = await fetch('http://localhost:3000/api/auth/me', {
+          const response = await fetch('https://storeinsights.onrender.com/api/auth/me', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, rememberMe = false) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('https://storeinsights.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch('https://storeinsights.onrender.com/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
       
       // Call logout endpoint if token exists
       if (token) {
-        await fetch('http://localhost:3000/api/auth/logout', {
+        await fetch('https://storeinsights.onrender.com/api/auth/logout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
