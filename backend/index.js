@@ -27,17 +27,31 @@ const allowed = (process.env.FRONTEND_ORIGINS || "http://localhost:5173,https://
 /* Middleware */
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+// Enhanced CORS configuration
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true); // curl/postman
-      if (allowed.includes(origin)) return cb(null, true);
+      console.log('CORS request from origin:', origin);
+      console.log('Allowed origins:', allowed);
+      
+      if (!origin) {
+        console.log('No origin (curl/postman) - allowing');
+        return cb(null, true);
+      }
+      
+      if (allowed.includes(origin)) {
+        console.log('Origin allowed:', origin);
+        return cb(null, true);
+      }
+      
+      console.log('Origin NOT allowed:', origin);
       cb(new Error("CORS: origin not allowed"));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    optionsSuccessStatus: 200
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 200,
+    preflightContinue: false
   })
 );
 app.use(compression());
@@ -53,25 +67,39 @@ app.use(
 );
 
 /* Health */
-app.get("/health", (_req, res) =>
-  res.json({ ok: true, ts: new Date().toISOString() })
-);
+app.get("/health", (_req, res) => {
+  console.log('Health check requested');
+  res.json({ ok: true, ts: new Date().toISOString() });
+});
+
+/* CORS Test endpoint */
+app.get("/api/cors-test", (_req, res) => {
+  console.log('CORS test endpoint hit');
+  res.json({ 
+    message: "CORS test successful", 
+    timestamp: new Date().toISOString(),
+    origin: _req.headers.origin 
+  });
+});
 
 /* Handle preflight requests */
 app.options('*', (req, res) => {
   const origin = req.headers.origin;
-  console.log('OPTIONS request from origin:', origin);
+  console.log('OPTIONS preflight request from origin:', origin);
+  console.log('Request headers:', req.headers);
   
   if (allowed.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
     res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400'); // 24 hours
     console.log('CORS headers set for origin:', origin);
+    res.status(200).end();
   } else {
-    console.log('Origin not allowed:', origin);
+    console.log('Origin not allowed for OPTIONS:', origin);
+    res.status(403).json({ error: 'CORS: origin not allowed' });
   }
-  res.sendStatus(200);
 });
 
 /* Authentication Routes */
