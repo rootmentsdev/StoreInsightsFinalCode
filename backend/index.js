@@ -185,6 +185,10 @@ app.use(
       if (allowed.includes(origin)) return cb(null, true);
       cb(new Error("CORS: origin not allowed"));
     },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
   })
 );
 app.use(compression());
@@ -203,6 +207,23 @@ app.use(
 app.get("/health", (_req, res) =>
   res.json({ ok: true, ts: new Date().toISOString() })
 );
+
+/* Handle preflight requests */
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  console.log('OPTIONS request from origin:', origin);
+  
+  if (allowed.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    console.log('CORS headers set for origin:', origin);
+  } else {
+    console.log('Origin not allowed:', origin);
+  }
+  res.sendStatus(200);
+});
 
 /* Authentication Routes */
 app.use("/api/auth", authRoutes);
