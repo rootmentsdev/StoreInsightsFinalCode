@@ -4,90 +4,29 @@ import { FaWallet, FaShoppingCart, FaUsers, FaStar, FaWalking, FaBox } from "rea
 
 const StatCard = ({ label, value, mtdValue, Icon, iconBg, iconColor }) => {
   return (
-    <Card
-  style={{
-    background: "#111213",
-    border: "1px solid rgba(255,255,255,0.08)",
-    borderRadius: "12px",
-    color: "#fff",
-    height: "120px", // Fixed height
-    width: "100%", // Full width of container
-    display: "flex",
-    flexDirection: "column",
-  }}
->
-  <Card.Body style={{ 
-    padding: "16px", 
-    display: "flex", 
-    flexDirection: "column", 
-    justifyContent: "space-between",
-    height: "100%"
-  }}>
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: "8px",
-      }}
-    >
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", marginBottom: "4px" }}>
-          {label}
-        </div>
-        <div
-          style={{
-            fontSize: "20px",
-            fontWeight: 600,
-            letterSpacing: "0.2px",
-            marginBottom: "4px",
-          }}
-        >
-          {value}
-        </div>
-        {mtdValue && (
-          <div
-            style={{
-              fontSize: "12px",
-              color: "rgba(255,255,255,0.6)",
-              fontWeight: 400,
-            }}
-          >
-            MTD: {mtdValue}
+    <Card className="stat-card-mobile">
+      <Card.Body className="stat-card-body">
+        <div className="stat-card-content">
+          <div className="stat-card-text">
+            <div className="stat-card-label">
+              {label}
+            </div>
+            <div className="stat-card-value">
+              {value}
+            </div>
+            {mtdValue && (
+              <div className="stat-card-mtd">
+                MTD: {mtdValue}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <div
-        style={{
-          height: "36px",
-          width: "36px",
-          borderRadius: "8px",
-          display: "grid",
-          placeItems: "center",
-          background: iconBg,
-          color: iconColor,
-          flexShrink: 0,
-        }}
-      >
-        <Icon size={18} />
-      </div>
-    </div>
-
-  </Card.Body>
-  <div
-    style={{
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: "1px",
-      background:
-        "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)",
-      pointerEvents: "none",
-    }}
-  />
-</Card>
-
+          <div className="stat-card-icon" style={{ background: iconBg, color: iconColor }}>
+            <Icon size={18} />
+          </div>
+        </div>
+      </Card.Body>
+      <div className="stat-card-gradient" />
+    </Card>
   );
 };
 
@@ -151,10 +90,10 @@ export default function StatsCards({
   ];
 
   return (
-    <Container fluid style={{ background: "#0b0b0b", padding: "6px 10px" }}>
-      <Row className="g-3">
+    <Container fluid className="stats-container">
+      <Row className="g-2 g-md-3">
         {stats.map((s, i) => (
-          <Col key={i} xs={12} sm={6} md={4} lg={2}>
+          <Col key={i} xs={6} sm={4} md={3} lg={2}>
             <StatCard {...s} />
           </Col>
         ))}

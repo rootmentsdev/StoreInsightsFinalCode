@@ -19,7 +19,7 @@ const GAS_URL =
   process.env.GAS_URL ||
   "https://script.google.com/macros/s/AKfycbyp_pNRxK3Z5SH81FJMbJ9DfM6bwzFYl0cHfRFk395ePGMqFc7ojCh1Uj5qZyx2c46liA/exec";
 
-const allowed = (process.env.FRONTEND_ORIGINS || "https://store-insights-final-code.vercel.app , https://cluster.rootments.live")
+const allowed = (process.env.FRONTEND_ORIGINS || "https://store-insights-final-code.vercel.app , https://cluster.rootments.live , http://localhost:5173")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);

@@ -12,7 +12,7 @@ import HeroHeader from "../components/Header";
 import StatsCards from "../components/StatsCards";
 
 /* ---------- API config ---------- */
-const API_BASE = (import.meta?.env?.VITE_API_BASE) || "https://storeinsights.onrender.com";
+const API_BASE = (import.meta?.env?.VITE_API_BASE) || "http://localhost:3000";
 const SHEET_TABS = ["South cluster", "North Cluster"];
 const sheetUrl = (tab) => `${API_BASE}/api/sheet?sheet=${encodeURIComponent(tab)}`;
 
@@ -345,99 +345,108 @@ export default function StoreInsights() {
 
 
           {/* Filters Toolbar */}
-          <Row className="g-2 sp-toolbar mb-3" role="region" aria-label="Filters">
-            <Col xs={12} md={4}>
-              <InputGroup className="sp-input">
-                <InputGroup.Text className="sp-input-pre">
-                  <FaSearch />
-                </InputGroup.Text>
+          <div className="sp-toolbar mb-3" role="region" aria-label="Filters">
+            {/* Search Row */}
+            <Row className="g-2 mb-2">
+              <Col xs={12}>
+                <InputGroup className="sp-input">
+                  <InputGroup.Text className="sp-input-pre">
+                    <FaSearch />
+                  </InputGroup.Text>
+                  <Form.Control
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search stores, clusters..."
+                    className="sp-input-control"
+                    aria-label="Search"
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+
+            {/* Filter Controls Row */}
+            <Row className="g-2 mb-2">
+              <Col xs={6} sm={4} md={3}>
+                <Dropdown onSelect={(k) => { setClusterFilter(k || "All Clusters"); setStoreFilter("All Stores"); }}>
+                  <Dropdown.Toggle className="sp-dd w-100">{clusterFilter}</Dropdown.Toggle>
+                  <Dropdown.Menu variant="dark" className="sp-dd-menu">
+                    {clusterOptions.map((name) => (
+                      <Dropdown.Item key={name} eventKey={name}>
+                        {name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+
+              <Col xs={6} sm={4} md={3}>
+                <Dropdown onSelect={(k) => setStoreFilter(k || "All Stores")}>
+                  <Dropdown.Toggle className="sp-dd w-100">{storeFilter}</Dropdown.Toggle>
+                  <Dropdown.Menu variant="dark" className="sp-dd-menu">
+                    {storeOptions.map((name) => (
+                      <Dropdown.Item key={name} eventKey={name}>
+                        {name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+
+              <Col xs={6} sm={4} md={3}>
+                <Dropdown onSelect={(k) => setPerfFilter(k || "All Performance")}>
+                  <Dropdown.Toggle className="sp-dd w-100">{perfFilter}</Dropdown.Toggle>
+                  <Dropdown.Menu variant="dark" className="sp-dd-menu">
+                    {["All Performance", "Excellent", "Good", "Average", "Poor"].map((p) => (
+                      <Dropdown.Item key={p} eventKey={p}>
+                        {p}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+
+              <Col xs={6} sm={4} md={3}>
                 <Form.Control
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search stores, clusters..."
-                  className="sp-input-control"
-                  aria-label="Search"
+                  type="month"
+                  value={month}
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="sp-month"
+                  aria-label="Select Month"
                 />
-              </InputGroup>
-            </Col>
+              </Col>
+            </Row>
 
-            <Col xs="auto">
-              <Dropdown onSelect={(k) => { setClusterFilter(k || "All Clusters"); setStoreFilter("All Stores"); }}>
-                <Dropdown.Toggle className="sp-dd">{clusterFilter}</Dropdown.Toggle>
-                <Dropdown.Menu variant="dark" className="sp-dd-menu">
-                  {clusterOptions.map((name) => (
-                    <Dropdown.Item key={name} eventKey={name}>
-                      {name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
+            {/* Action Buttons Row */}
+            <Row className="g-2">
+              <Col xs={6}>
+                <Dropdown onSelect={(k) => setCompare(k || "Target")}>
+                  <Dropdown.Toggle className="sp-dd w-100">
+                    Compare: <b className="sp-dd-bold">{compare}</b>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu variant="dark" className="sp-dd-menu">
+                    {["Target", "Last Month", "LTM", "Forecast"].map((p) => (
+                      <Dropdown.Item key={p} eventKey={p}>
+                        {p}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
 
-            <Col xs="auto">
-              <Dropdown onSelect={(k) => setStoreFilter(k || "All Stores")}>
-                <Dropdown.Toggle className="sp-dd">{storeFilter}</Dropdown.Toggle>
-                <Dropdown.Menu variant="dark" className="sp-dd-menu">
-                  {storeOptions.map((name) => (
-                    <Dropdown.Item key={name} eventKey={name}>
-                      {name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-
-            <Col xs="auto">
-              <Dropdown onSelect={(k) => setPerfFilter(k || "All Performance")}>
-                <Dropdown.Toggle className="sp-dd">{perfFilter}</Dropdown.Toggle>
-                <Dropdown.Menu variant="dark" className="sp-dd-menu">
-                  {["All Performance", "Excellent", "Good", "Average", "Poor"].map((p) => (
-                    <Dropdown.Item key={p} eventKey={p}>
-                      {p}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-
-            <Col xs="auto">
-              <Dropdown onSelect={(k) => setCompare(k || "Target")}>
-                <Dropdown.Toggle className="sp-dd">
-                  Compare with <b className="sp-dd-bold">{compare}</b>
-                </Dropdown.Toggle>
-                <Dropdown.Menu variant="dark" className="sp-dd-menu">
-                  {["Target", "Last Month", "LTM", "Forecast"].map((p) => (
-                    <Dropdown.Item key={p} eventKey={p}>
-                      {p}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-
-            <Col xs="auto">
-              <Form.Control
-                type="month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                className="sp-month"
-                aria-label="Select Month"
-              />
-            </Col>
-
-            <Col xs="auto" className="ms-auto">
-              <ButtonToolbar>
-                <Button type="button" className="sp-btn">
-                  <FaFilter style={{ marginRight: 6 }} />
-                  Filters
-                </Button>
-                <Button type="button" className="sp-btn ms-2" onClick={handleExport}>
-                  <FaDownload style={{ marginRight: 6 }} />
-                  Export
-                </Button>
-              </ButtonToolbar>
-            </Col>
-          </Row>
+              <Col xs={6}>
+                <ButtonToolbar className="w-100">
+                  <Button type="button" className="sp-btn flex-fill me-1">
+                    <FaFilter style={{ marginRight: 4 }} />
+                    Filters
+                  </Button>
+                  <Button type="button" className="sp-btn flex-fill" onClick={handleExport}>
+                    <FaDownload style={{ marginRight: 4 }} />
+                    Export
+                  </Button>
+                </ButtonToolbar>
+              </Col>
+            </Row>
+          </div>
 
           {/* Main Data Table */}
           <div className="sp-card">
@@ -472,10 +481,15 @@ export default function StoreInsights() {
 
                   <tbody>
                     {loading && (
-                      <tr>
-                        <td colSpan={12} className="text-center text-muted py-4">
-                          <FaSync className="fa-spin me-2" />
-                          Loading store data...
+                      <tr className="loading-row">
+                        <td colSpan={12} className="text-center text-muted py-5">
+                          <div className="d-flex flex-column align-items-center">
+                            <FaSync className="fa-spin mb-3" style={{ fontSize: '24px', color: '#1e73be' }} />
+                            <div className="loading-shimmer" style={{ width: '200px', height: '20px', borderRadius: '10px' }}></div>
+                            <div className="mt-2" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}>
+                              Loading store data...
+                            </div>
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -651,8 +665,8 @@ export default function StoreInsights() {
                                       </div>
                                       <div className="sp-kv">
                                         <span>Status</span>
-                                        <b className={targetAchievement >= 100 ? "text-success" : "text-warning"}>
-                                          {targetAchievement >= 100 ? "On Track" : "Needs Attention"}
+                                        <b className={`status-indicator ${targetAchievement >= 100 ? "status-on-track" : targetAchievement >= 80 ? "status-needs-attention" : "status-critical"}`}>
+                                          {targetAchievement >= 100 ? "On Track" : targetAchievement >= 80 ? "Needs Attention" : "Critical"}
                                         </b>
                                       </div>
                                     </Col>
