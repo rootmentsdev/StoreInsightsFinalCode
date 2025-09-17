@@ -17,7 +17,7 @@ connectDB();
 const PORT = process.env.PORT || 3000;
 const GAS_URL =
   process.env.GAS_URL ||
-  "https://script.google.com/macros/s/AKfycbyp_pNRxK3Z5SH81FJMbJ9DfM6bwzFYl0cHfRFk395ePGMqFc7ojCh1Uj5qZyx2c46liA/exec";
+  "https://script.google.com/macros/s/AKfycbxbOYqflpZs1t11WK_Nd9uKxC_OHcs-iTLMK87jfmw7qt_suCnATt-iWqFRWhNECemS/exec";
 
 const allowed = (process.env.FRONTEND_ORIGINS || "https://store-insights-final-code.vercel.app , https://cluster.rootments.live")
   .split(",")
