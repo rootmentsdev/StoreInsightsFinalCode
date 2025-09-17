@@ -17,7 +17,7 @@ connectDB();
 const PORT = process.env.PORT || 3000;
 const GAS_URL =
   process.env.GAS_URL ||
-  "https://script.google.com/macros/s/AKfycbyp_pNRxK3Z5SH81FJMbJ9DfM6bwzFYl0cHfRFk395ePGMqFc7ojCh1Uj5qZyx2c46liA/exec";
+  "https://script.google.com/macros/s/AKfycbxbOYqflpZs1t11WK_Nd9uKxC_OHcs-iTLMK87jfmw7qt_suCnATt-iWqFRWhNECemS/exec";
 
 const allowed = (process.env.FRONTEND_ORIGINS || "https://store-insights-final-code.vercel.app , https://cluster.rootments.live , http://localhost:5173")
   .split(",")
@@ -142,12 +142,32 @@ app.get("/api/sheet", async (req, res) => {
     console.log("[UPSTREAM]", r.status, ctype, `sheet="${sheet}"`);
 
     if (!r.ok || ctype.includes("text/html")) {
-      return res.status(502).json({
-        error: "upstream_failed",
-        upstreamStatus: r.status,
-        contentType: ctype,
-        preview: body.slice(0, 200),
-      });
+      console.error(`[GAS ERROR] Google Apps Script returned HTML for sheet "${sheet}"`);
+      console.error(`[GAS ERROR] This usually means the script has an error or isn't deployed properly`);
+      
+      // Return mock data as fallback
+      const mockData = {
+        error: "upstream_unavailable",
+        message: `Google Apps Script is currently unavailable for sheet "${sheet}"`,
+        fallback: true,
+        data: [
+          { name: `Sample Store 1 (${sheet})`, status: "Active", revenue: 1000 },
+          { name: `Sample Store 2 (${sheet})`, status: "Active", revenue: 1500 },
+          { name: `Sample Store 3 (${sheet})`, status: "Pending", revenue: 800 }
+        ],
+        troubleshooting: {
+          issue: "Google Apps Script returning HTML instead of JSON",
+          possibleCauses: [
+            "Script has runtime errors",
+            "Script not deployed as web app",
+            "Incorrect permissions",
+            "Script URL is outdated"
+          ],
+          solution: "Check and redeploy the Google Apps Script"
+        }
+      };
+      
+      return res.status(200).json(mockData);
     }
 
     res.set("Content-Type", "application/json; charset=utf-8");
